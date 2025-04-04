@@ -1,15 +1,12 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from utils.database import products_collection
+from utils.product_service import get_all_products, add_new_product, update_existing_product, delete_existing_product
 
 products_bp = Blueprint('products', __name__)
 
 @products_bp.route('/products', methods=['GET'])
 def get_products():
-    products = list(products_collection.find())
-    for product in products:
-        product['_id'] = str(product['_id'])
-        product.pop('user_id', None)  # Safely remove user_id from the response if it exists
+    products = get_all_products()
     return jsonify(products)
 
 @products_bp.route('/products', methods=['POST'])
@@ -17,19 +14,28 @@ def get_products():
 def add_product():
     data = request.json
     user_id = get_jwt_identity()
-    product = {
-        "name": data['name'],
-        "manufacturer": data['manufacturer'],
-        "category": data['category'],
-        "price": data['price'],
-        "description": data['description'],
-        "images": data['images'],
-        "mainmaterial": data['mainmaterial'],
-        "os": data['os'],
-        "varastossa": data['varastossa'],
-        "quantity": data['quantity'],
-        "updated_at": data['updated_at'],
-        "user_id": user_id  # Store the user ID with the product
-    }
-    result = products_collection.insert_one(product)
-    return jsonify({'_id': str(result.inserted_id)}), 201
+    product_id = add_new_product(data, user_id)
+    return jsonify({'_id': product_id}), 201
+
+@products_bp.route('/products/<product_id>', methods=['PUT'])
+@jwt_required()
+def update_product(product_id):
+    data = request.json
+    user_id = get_jwt_identity()
+    updated_product, error = update_existing_product(product_id, data, user_id)
+
+    if error:
+        return jsonify({'message': error}), 404 if error == 'Product not found' else 403
+
+    return jsonify({'message': 'Product updated successfully'}), 200
+
+@products_bp.route('/products/<product_id>', methods=['DELETE'])
+@jwt_required()
+def delete_product(product_id):
+    user_id = get_jwt_identity()
+    error = delete_existing_product(product_id, user_id)
+
+    if error:
+        return jsonify({'message': error}), 404 if error == 'Product not found' else 403
+
+    return jsonify({'message': 'Product deleted successfully'}), 200
