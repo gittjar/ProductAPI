@@ -1,6 +1,7 @@
+
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { getProducts } from '../services/api';
+import { useParams } from 'react-router-dom';
+import { getProductById } from '../services/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface Product {
@@ -19,50 +20,45 @@ interface Product {
   user_id: string;
 }
 
-const ProductList: React.FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+const ProductDetail: React.FC = () => {
+const { id } = useParams<{ id: string }>();
+const [product, setProduct] = useState<Product | null>(null);
 
-  useEffect(() => {
-    getProducts().then(response => {
-      setProducts(response.data);
+useEffect(() => {
+    getProductById(id ?? '').then(response => {
+        setProduct(response.data);
     }).catch(error => {
-      console.error('There was an error fetching the products!', error);
+        console.error('There was an error fetching the product!', error);
     });
-  }, []);
+}, [id]);
+
+if (!product) {
+    return <div>Loading...</div>;
+}
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">Product List</h1>
-      <div className="table-responsive">
-        <table className="table table-bordered table-striped table-hover">
-          <thead className="thead-dark">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Name</th>
-              <th scope="col">Manufacturer</th>
-              <th scope="col">Category</th>
-              <th scope="col">Price</th>
-              <th scope="col">In Stock</th>
-              <th scope="col">Quantity</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((product, index) => (
-              <tr key={product._id}>
-                <th scope="row">{index + 1}</th>
-                <td><Link to={`/product/${product._id}`}>{product.name}</Link></td>
-                <td>{product.manufacturer}</td>
-                <td>{product.category}</td>
-                <td>{product.price}</td>
-                <td>{product.varastossa ? 'Yes' : 'No'}</td>
-                <td>{product.quantity}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <h1 className="text-2xl font-bold mb-4 text-center">{product.name}</h1>
+      <div className="card">
+        <div className="card-body">
+          <h5 className="card-title">Manufacturer: {product.manufacturer}</h5>
+          <img src={product.images[0]} alt={product.name} className="card-img-top" />
+          <p className="card-text">ID: {product._id}</p>
+          <p className="card-text">Category: {product.category}</p>
+          <p className="card-text">Price: ${product.price}</p>
+          <p className="card-text">Description: {product.description}</p>
+          <p className="card-text">Main Material: {product.mainmaterial}</p>
+          <p className="card-text">Operating System: {product.os}</p>
+          <p className="card-text">In Stock: {product.varastossa ? 'Yes' : 'No'}</p>
+          <p className="card-text">Quantity: {product.quantity}</p>
+          <p className="card-text">Last Updated: {new Date(product.updated_at).toLocaleString()}</p>
+        </div>
       </div>
+      <button className="btn btn-primary mt-4" onClick={() => window.history.back()}>
+        Back to Product List
+        </button>
     </div>
   );
 };
 
-export default ProductList;
+export default ProductDetail;
