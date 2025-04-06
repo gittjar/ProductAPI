@@ -1,6 +1,7 @@
+# routes/products.py
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from utils.product_service import get_all_products, add_new_product, update_existing_product, delete_existing_product
+from utils.product_service import get_all_products, add_new_product, update_existing_product, delete_existing_product, get_product_by_id
 
 products_bp = Blueprint('products', __name__)
 
@@ -8,6 +9,13 @@ products_bp = Blueprint('products', __name__)
 def get_products():
     products = get_all_products()
     return jsonify(products)
+
+@products_bp.route('/products/<product_id>', methods=['GET'])
+def get_product(product_id):
+    product, error = get_product_by_id(product_id)
+    if error:
+        return jsonify({'message': error}), 404
+    return jsonify(product), 200
 
 @products_bp.route('/products', methods=['POST'])
 @jwt_required()

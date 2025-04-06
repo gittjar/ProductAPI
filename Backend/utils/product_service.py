@@ -8,6 +8,15 @@ def get_all_products():
         product.pop('user_id', None)  # Safely remove user_id from the response if it exists
     return products
 
+def get_product_by_id(product_id):
+    product = products_collection.find_one({'_id': ObjectId(product_id)})
+    if product:
+        product['_id'] = str(product['_id'])
+        product.pop('user_id', None)  # Safely remove user_id from the response if it exists
+        return product, None
+    else:
+        return None, 'Product not found'
+
 def add_new_product(data, user_id):
     product = {
         "name": data['name'],

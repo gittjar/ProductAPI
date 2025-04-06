@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { getProducts } from '../services/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -41,32 +42,20 @@ const ProductList: React.FC = () => {
               <th scope="col">Manufacturer</th>
               <th scope="col">Category</th>
               <th scope="col">Price</th>
-              <th scope="col">Description</th>
-              <th scope="col">Images</th>
-              <th scope="col">Main Material</th>
-              <th scope="col">OS</th>
               <th scope="col">In Stock</th>
               <th scope="col">Quantity</th>
-              <th scope="col">Updated At</th>
-              <th scope="col">User ID</th>
             </tr>
           </thead>
           <tbody>
             {products.map((product, index) => (
               <tr key={product._id}>
                 <th scope="row">{index + 1}</th>
-                <td>{product.name}</td>
+                <td><Link to={`/product/${product._id}`}>{product.name}</Link></td>
                 <td>{product.manufacturer}</td>
                 <td>{product.category}</td>
                 <td>{product.price}</td>
-                <td>{product.description}</td>
-                <td>{product.images.join(', ')}</td>
-                <td>{product.mainmaterial}</td>
-                <td>{product.os}</td>
                 <td>{product.varastossa ? 'Yes' : 'No'}</td>
                 <td>{product.quantity}</td>
-                <td>{new Date(product.updated_at).toLocaleString()}</td>
-                <td>{product.user_id}</td>
               </tr>
             ))}
           </tbody>
