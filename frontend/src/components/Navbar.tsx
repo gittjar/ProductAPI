@@ -5,7 +5,6 @@ const Navbar: React.FC = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem('token');
   const username = localStorage.getItem('username');
-  
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -15,9 +14,12 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
-      <Link className="navbar-brand" to="/">MyApp</Link>
-      <div className="collapse navbar-collapse">
-        <ul className="navbar-nav mr-auto">
+      <Link className="navbar-brand ml-4" to="/">MyApp</Link>
+      <button className="navbar-toggler mx-4" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span className="navbar-toggler-icon"></span>
+      </button>
+      <div className="collapse navbar-collapse" id="navbarNav">
+        <ul className="navbar-nav mr-auto ml-4">
           <li className="nav-item">
             <Link className="nav-link" to="/">Home</Link>
           </li>
@@ -29,9 +31,11 @@ const Navbar: React.FC = () => {
               <li className="nav-item">
                 <Link className="nav-link" to="/create">Create Product</Link>
               </li>
-              <li className="nav-item">
-                <span className="nav-link">Hello, {username}</span>
-              </li>
+              {username && (
+                <li className="nav-item">
+                  <span className="nav-link">Hello, {username}</span>
+                </li>
+              )}
               <li className="nav-item">
                 <button className="btn btn-link nav-link" onClick={handleLogout}>Logout</button>
               </li>
