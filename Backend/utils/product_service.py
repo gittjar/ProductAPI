@@ -1,4 +1,5 @@
 from bson import ObjectId
+from datetime import datetime
 from utils.database import products_collection
 
 def get_all_products():
@@ -18,6 +19,7 @@ def get_product_by_id(product_id):
         return None, 'Product not found'
 
 def add_new_product(data, user_id):
+    current_time = datetime.utcnow()
     product = {
         "name": data['name'],
         "manufacturer": data['manufacturer'],
@@ -29,7 +31,8 @@ def add_new_product(data, user_id):
         "os": data['os'],
         "varastossa": data['varastossa'],
         "quantity": data['quantity'],
-        "updated_at": data['updated_at'],
+        "created_at": current_time,
+        "updated_at": current_time,
         "user_id": user_id  # Store the user ID with the product
     }
     result = products_collection.insert_one(product)
@@ -55,7 +58,7 @@ def update_existing_product(product_id, data, user_id):
         "os": data.get('os', product['os']),
         "varastossa": data.get('varastossa', product['varastossa']),
         "quantity": data.get('quantity', product['quantity']),
-        "updated_at": data.get('updated_at', product['updated_at']),
+        "updated_at": datetime.utcnow(),  # Update the timestamp to the current time
         "user_id": user_id  # Ensure the user ID remains the same
     }
 

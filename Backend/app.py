@@ -7,7 +7,9 @@ from routes.products import products_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
-CORS(app)  # Enable CORS for all routes
+# CORS(app)  # Enable CORS for all routes
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+
 jwt = JWTManager(app)
 
 app.register_blueprint(auth_bp)
