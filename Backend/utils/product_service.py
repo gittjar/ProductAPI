@@ -1,6 +1,15 @@
 from bson import ObjectId
 from datetime import datetime
 from utils.database import products_collection
+from utils.database import manufacturers_collection
+
+def get_all_manufacturers():
+    manufacturers = list(manufacturers_collection.find())
+    for manufacturer in manufacturers:
+        manufacturer['_id'] = str(manufacturer['_id'])
+        manufacturer.pop('user_id', None)  # Safely remove user_id from the response if it exists
+    return manufacturers
+
 
 def get_all_products():
     products = list(products_collection.find())
