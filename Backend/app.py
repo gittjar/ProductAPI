@@ -4,6 +4,7 @@ from flask_jwt_extended import JWTManager
 from config import Config
 from routes.auth import auth_bp
 from routes.products import products_bp
+from routes.manufacturers import manufacturers_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -14,6 +15,7 @@ jwt = JWTManager(app)
 
 app.register_blueprint(auth_bp)
 app.register_blueprint(products_bp)
+app.register_blueprint(manufacturers_bp)
 
 @app.route('/')
 def home():
