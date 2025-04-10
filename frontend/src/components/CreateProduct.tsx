@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { addProduct } from '../services/api';
+import { addProduct, getManufacturers } from '../services/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const CreateProduct: React.FC = () => {
@@ -16,9 +16,24 @@ const CreateProduct: React.FC = () => {
     varastossa: false,
     quantity: 0,
   });
+  const [manufacturers, setManufacturers] = useState<{ _id: string; name: string }[]>([]);
   const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  // Fetch manufacturers from the API
+  useEffect(() => {
+    const fetchManufacturers = async () => {
+      try {
+        const response = await getManufacturers();
+        setManufacturers(response.data); // Ensure response.data is an array of objects with _id and name
+      } catch (error) {
+        console.error('Error fetching manufacturers:', error);
+      }
+    };
+
+    fetchManufacturers();
+  }, []);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setProduct({ ...product, [name]: value });
   };
@@ -47,6 +62,23 @@ const CreateProduct: React.FC = () => {
             value={product.name}
             onChange={handleChange}
           />
+        </div>
+
+        <div className="form-group">
+          <label>Manufacturer</label>
+          <select
+            className="form-control"
+            name="manufacturer"
+            value={product.manufacturer}
+            onChange={handleChange}
+          >
+            <option value="">Select Manufacturer</option>
+            {manufacturers.map((manufacturer) => (
+              <option key={manufacturer._id} value={manufacturer._id}>
+                {manufacturer.name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <button type="submit" className="btn btn-primary mt-3">Create</button>
