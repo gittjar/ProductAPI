@@ -1,6 +1,6 @@
 from bson import ObjectId
 from datetime import datetime
-from utils.database import products_collection
+from utils.database import products_collection, manufacturers_collection
 
 
 def get_all_products():
@@ -8,13 +8,30 @@ def get_all_products():
     for product in products:
         product['_id'] = str(product['_id'])
         product.pop('user_id', None)  # Safely remove user_id from the response if it exists
+
+        # Fetch manufacturer name
+        manufacturer = manufacturers_collection.find_one({"_id": ObjectId(product['manufacturer'])})
+        if manufacturer:
+            product['manufacturer'] = {
+                "_id": str(manufacturer['_id']),
+                "name": manufacturer['name']
+            }
     return products
+
 
 def get_product_by_id(product_id):
     product = products_collection.find_one({'_id': ObjectId(product_id)})
     if product:
         product['_id'] = str(product['_id'])
         product.pop('user_id', None)  # Safely remove user_id from the response if it exists
+
+        # Fetch manufacturer name
+        manufacturer = manufacturers_collection.find_one({"_id": ObjectId(product['manufacturer'])})
+        if manufacturer:
+            product['manufacturer'] = {
+                "_id": str(manufacturer['_id']),
+                "name": manufacturer['name']
+            }
         return product, None
     else:
         return None, 'Product not found'

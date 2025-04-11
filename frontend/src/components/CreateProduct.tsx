@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const CreateProduct: React.FC = () => {
   const [product, setProduct] = useState({
     name: '',
-    manufacturer: '',
+    manufacturer: '', // Stores the manufacturer ID
     category: '',
     price: 0,
     description: '',
@@ -17,6 +17,7 @@ const CreateProduct: React.FC = () => {
     quantity: 0,
   });
   const [manufacturers, setManufacturers] = useState<{ _id: string; name: string }[]>([]);
+  const [selectedManufacturerName, setSelectedManufacturerName] = useState<string>(''); // Stores the manufacturer name for display
   const navigate = useNavigate();
 
   // Fetch manufacturers from the API
@@ -35,13 +36,20 @@ const CreateProduct: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
+
+    // Update manufacturer name when manufacturer ID is selected
+    if (name === 'manufacturer') {
+      const selectedManufacturer = manufacturers.find((m) => m._id === value);
+      setSelectedManufacturerName(selectedManufacturer ? selectedManufacturer.name : '');
+    }
+
     setProduct({ ...product, [name]: value });
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await addProduct(product);
+      await addProduct(product); // Send the product object with manufacturer ID to the API
       navigate('/');
     } catch (error) {
       console.error('There was an error creating the product!', error);
@@ -79,6 +87,9 @@ const CreateProduct: React.FC = () => {
               </option>
             ))}
           </select>
+          {selectedManufacturerName && (
+            <small className="form-text text-muted">Selected: {selectedManufacturerName}</small>
+          )}
         </div>
 
         <button type="submit" className="btn btn-primary mt-3">Create</button>
