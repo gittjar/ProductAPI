@@ -6,7 +6,10 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 interface Product {
   _id: string;
   name: string;
-  manufacturer: string; // This will store the manufacturer ID
+  manufacturer: {
+    _id: string;
+    name: string;
+  }; // Updated to store manufacturer object
   category: string;
   price: number;
   description: string;
@@ -19,35 +22,17 @@ interface Product {
   user_id: string;
 }
 
-interface Manufacturer {
-  _id: string;
-  name: string;
-}
-
 const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [manufacturerMap, setManufacturerMap] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    // Fetch products and manufacturers
+    // Fetch products
     const fetchData = async () => {
       try {
-        // Fetch products
         const productsResponse = await getProducts();
         setProducts(productsResponse.data);
-
-        // Fetch manufacturers
-        const manufacturersResponse = await getManufacturers();
-        const manufacturers: Manufacturer[] = manufacturersResponse.data;
-
-        // Create a mapping of manufacturer IDs to names
-        const map: { [key: string]: string } = {};
-        manufacturers.forEach((manufacturer) => {
-          map[manufacturer._id] = manufacturer.name;
-        });
-        setManufacturerMap(map);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching products:', error);
       }
     };
 
@@ -75,7 +60,7 @@ const ProductList: React.FC = () => {
               <tr key={product._id}>
                 <th scope="row">{index + 1}</th>
                 <td><Link to={`/product/${product._id}`}>{product.name}</Link></td>
-                <td>{manufacturerMap[product.manufacturer] || 'Unknown'}</td>
+                <td>{product.manufacturer?.name || 'Unknown'}</td> 
                 <td>{product.category}</td>
                 <td>{product.price}</td>
                 <td>{product.varastossa ? 'Yes' : 'No'}</td>
