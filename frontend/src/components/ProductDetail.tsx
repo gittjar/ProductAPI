@@ -9,7 +9,7 @@ interface Product {
   manufacturer: {
     _id: string;
     name: string;
-  }; // Updated to store manufacturer object
+  };
   category: string;
   price: number;
   description: string;
@@ -25,13 +25,14 @@ interface Product {
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch product details
     const fetchProduct = async () => {
       try {
         const productResponse = await getProductById(id ?? '');
         setProduct(productResponse.data);
+        setSelectedImage(productResponse.data.images[0]); // Set the first image as default
       } catch (error) {
         console.error('There was an error fetching the product!', error);
       }
@@ -50,9 +51,26 @@ const ProductDetail: React.FC = () => {
       <div className="card">
         <div className="card-body">
           <h5 className="card-title">Manufacturer: {product.manufacturer?.name || 'Unknown'}</h5>
-          {product.images.length > 0 && (
-            <img src={product.images[0]} alt={product.name} className="card-img-top" />
+          {selectedImage && (
+            <img
+              src={selectedImage}
+              alt={product.name}
+              className="img-fluid mb-3"
+              style={{ maxHeight: '400px', display: 'block', margin: '0 auto', borderRadius: '10px'}}
+            />
           )}
+          <div className="d-flex flex-wrap justify-content-center">
+            {product.images.map((image, index) => (
+              <img
+                key={index}
+                src={image}
+                alt={`${product.name} ${index + 1}`}
+                className="img-thumbnail m-1"
+                style={{ width: '100px', height: '100px', cursor: 'pointer', borderRadius: '5px' }}
+                onClick={() => setSelectedImage(image)}
+              />
+            ))}
+          </div>
           <p className="card-text">ID: {product._id}</p>
           <p className="card-text">Category: {product.category}</p>
           <p className="card-text">Price: ${product.price}</p>
