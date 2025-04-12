@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getProducts, getManufacturers } from '../services/api';
+import { getProducts } from '../services/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface Product {
@@ -9,7 +9,7 @@ interface Product {
   manufacturer: {
     _id: string;
     name: string;
-  }; // Updated to store manufacturer object
+  };
   category: string;
   price: number;
   description: string;
@@ -47,6 +47,7 @@ const ProductList: React.FC = () => {
           <thead className="thead-dark">
             <tr>
               <th scope="col">#</th>
+              <th scope="col">Image</th>
               <th scope="col">Name</th>
               <th scope="col">Manufacturer</th>
               <th scope="col">Category</th>
@@ -59,8 +60,21 @@ const ProductList: React.FC = () => {
             {products.map((product, index) => (
               <tr key={product._id}>
                 <th scope="row">{index + 1}</th>
-                <td><Link to={`/product/${product._id}`}>{product.name}</Link></td>
-                <td>{product.manufacturer?.name || 'Unknown'}</td> 
+                <td>
+                  {product.images.length > 0 ? (
+                    <img
+                      src={product.images[0]}
+                      alt={product.name}
+                      style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    'No Image'
+                  )}
+                </td>
+                <td>
+                  <Link to={`/product/${product._id}`}>{product.name}</Link>
+                </td>
+                <td>{product.manufacturer?.name || 'Unknown'}</td>
                 <td>{product.category}</td>
                 <td>{product.price}</td>
                 <td>{product.varastossa ? 'Yes' : 'No'}</td>
