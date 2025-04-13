@@ -45,46 +45,83 @@ const ProductDetail: React.FC = () => {
     return <div>Loading...</div>;
   }
 
+  // Determine the card border style based on stock and quantity
+  const cardBorderStyle =
+    product.varastossa && product.quantity > 0
+      ? 'border-success rounded'
+      : 'border-danger';
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4 text-center">{product.name}</h1>
-      <div className="card">
-        <div className="card-body">
-          <h5 className="card-title">Manufacturer: {product.manufacturer?.name || 'Unknown'}</h5>
-          {selectedImage && (
+    <div className="container d-flex justify-content-center align-items-center mb-4" style={{ marginTop: '100px' }}>
+      <div className={`card ${cardBorderStyle}`} style={{ maxWidth: '600px', width: '100%' }}>
+        {selectedImage && (
+          <div style={{ height: '400px', overflow: 'hidden' }}>
             <img
               src={selectedImage}
+              className="card-img-top"
               alt={product.name}
-              className="img-fluid mb-3"
-              style={{ maxHeight: '400px', display: 'block', margin: '0 auto', borderRadius: '10px'}}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
-          )}
-          <div className="d-flex flex-wrap justify-content-center">
+          </div>
+        )}
+        <div className="card-body" style={{ padding: '0' }}>
+          <h5 className="card-title mb-4 mt-4 text-center" style={{ margin: '10px 0' }}>{product.name}</h5>
+          <div className="d-flex flex-wrap justify-content-center mb-2">
             {product.images.map((image, index) => (
               <img
                 key={index}
                 src={image}
                 alt={`${product.name} ${index + 1}`}
-                className="img-thumbnail m-1"
-                style={{ width: '100px', height: '100px', cursor: 'pointer', borderRadius: '5px' }}
+                className="img-thumbnail"
+                style={{
+                  width: '80px',
+                  height: '80px',
+                  cursor: 'pointer',
+                  objectFit: 'cover',
+                  margin: '2px',
+                }}
                 onClick={() => setSelectedImage(image)}
               />
             ))}
           </div>
-          <p className="card-text">ID: {product._id}</p>
-          <p className="card-text">Category: {product.category}</p>
-          <p className="card-text">Price: ${product.price}</p>
-          <p className="card-text">Description: {product.description}</p>
-          <p className="card-text">Main Material: {product.mainmaterial}</p>
-          <p className="card-text">Operating System: {product.os}</p>
-          <p className="card-text">In Stock: {product.varastossa ? 'Yes' : 'No'}</p>
-          <p className="card-text">Quantity: {product.quantity}</p>
-          <p className="card-text">Last Updated: {new Date(product.updated_at).toLocaleString()}</p>
+          <p className="card-text mb-1 border-bottom" style={{ margin: '0 10px' }}>
+            <strong>Manufacturer:</strong> {product.manufacturer?.name || 'Unknown'}
+          </p>
+          <p className="card-text mb-1 list-group-item" style={{ margin: '0 10px' }}>
+            <strong>Category:</strong> {product.category}
+          </p>
+          <p className="card-text mb-1" style={{ margin: '0 10px' }}>
+            <strong>Price:</strong> ${product.price}
+          </p>
+          <p className="card-text mb-1" style={{ margin: '0 10px' }}>
+            <strong>Description:</strong> {product.description}
+          </p>
+          <p className="card-text mb-1" style={{ margin: '0 10px' }}>
+            <strong>Main Material:</strong> {product.mainmaterial}
+          </p>
+          <p className="card-text mb-1" style={{ margin: '0 10px' }}>
+            <strong>Operating System:</strong> {product.os}
+          </p>
+          <p className="card-text mb-1" style={{ margin: '0 10px' }}>
+            <strong>In Stock:</strong> {product.varastossa ? 'Yes' : 'No'}
+          </p>
+          <p className="card-text mb-1" style={{ margin: '0 10px' }}>
+            <strong>Quantity:</strong> {product.quantity}
+          </p>
         </div>
+        <div className="card-footer" style={{ padding: '0', textAlign: 'center' }}>
+          <small className="text-body-secondary" style={{ display: 'block', margin: '10px 0' }}>
+            Last Updated: {new Date(product.updated_at).toLocaleString()}
+          </small>
+        </div>
+        <button
+          className="btn btn-primary mt-2 mb-2 mx-2"
+          style={{ width: 'fit-content' }}
+          onClick={() => window.history.back()}
+        >
+          Back to Product List
+        </button>
       </div>
-      <button className="btn btn-primary mt-4" onClick={() => window.history.back()}>
-        Back to Product List
-      </button>
     </div>
   );
 };
