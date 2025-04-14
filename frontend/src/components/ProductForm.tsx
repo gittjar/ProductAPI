@@ -155,7 +155,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
             className="form-control mb-2"
             value={image}
             onChange={(e) => onAdditionalImageChange(index, e.target.value)}
-            placeholder={`Additional Image URL ${index + 4}`}
+            placeholder={`Additional Image URL ${index + 1}`}
           />
         ))}
         <button type="button" className="btn btn-secondary mt-2" onClick={onAddImageField}>

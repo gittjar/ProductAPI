@@ -26,14 +26,14 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/edit/:id"
-          element={
-            <ProtectedRoute>
-              <EditProduct />
-            </ProtectedRoute>
-          }
-        />
+ <Route
+  path="/edit-product/:id"
+  element={
+    <ProtectedRoute>
+      <EditProduct />
+    </ProtectedRoute>
+  }
+/>
       </Routes>
     </Router>
   );

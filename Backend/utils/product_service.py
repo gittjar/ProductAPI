@@ -4,43 +4,47 @@ from utils.database import products_collection, manufacturers_collection
 
 
 def get_all_products():
-    products = list(products_collection.find())
+    products = products_collection.find()
+    all_products = []
     for product in products:
+        # Convert ObjectId to string
         product['_id'] = str(product['_id'])
-        product.pop('user_id', None)  # Safely remove user_id from the response if it exists
-
-        # Fetch manufacturer name
-        manufacturer = manufacturers_collection.find_one({"_id": ObjectId(product['manufacturer'])})
-        if manufacturer:
-            product['manufacturer'] = {
-                "_id": str(manufacturer['_id']),
-                "name": manufacturer['name']
-            }
-    return products
+        if 'manufacturer' in product and ObjectId.is_valid(product['manufacturer']):
+            manufacturer = manufacturers_collection.find_one({"_id": ObjectId(product['manufacturer'])})
+            if manufacturer:
+                product['manufacturer'] = {
+                    "_id": str(manufacturer['_id']),
+                    "name": manufacturer['name']
+                }
+        all_products.append(product)
+    return all_products
 
 
 def get_product_by_id(product_id):
     product = products_collection.find_one({'_id': ObjectId(product_id)})
     if product:
+        # Convert ObjectId to string
         product['_id'] = str(product['_id'])
         product.pop('user_id', None)  # Safely remove user_id from the response if it exists
 
-        # Fetch manufacturer name
-        manufacturer = manufacturers_collection.find_one({"_id": ObjectId(product['manufacturer'])})
-        if manufacturer:
-            product['manufacturer'] = {
-                "_id": str(manufacturer['_id']),
-                "name": manufacturer['name']
-            }
+        # Fetch manufacturer details
+        if 'manufacturer' in product and ObjectId.is_valid(product['manufacturer']):
+            manufacturer = manufacturers_collection.find_one({"_id": ObjectId(product['manufacturer'])})
+            if manufacturer:
+                product['manufacturer'] = {
+                    "_id": str(manufacturer['_id']),
+                    "name": manufacturer['name']
+                }
         return product, None
     else:
         return None, 'Product not found'
+
 
 def add_new_product(data, user_id):
     current_time = datetime.utcnow()
     product = {
         "name": data['name'],
-        "manufacturer": data['manufacturer'],
+        "manufacturer": data['manufacturer'],  # Expecting manufacturer as an ObjectId string
         "category": data['category'],
         "price": data['price'],
         "description": data['description'],
@@ -56,6 +60,7 @@ def add_new_product(data, user_id):
     result = products_collection.insert_one(product)
     return str(result.inserted_id)
 
+
 def update_existing_product(product_id, data, user_id):
     product = products_collection.find_one({"_id": ObjectId(product_id)})
 
@@ -67,7 +72,7 @@ def update_existing_product(product_id, data, user_id):
 
     updated_product = {
         "name": data.get('name', product['name']),
-        "manufacturer": data.get('manufacturer', product['manufacturer']),
+        "manufacturer": data.get('manufacturer', product['manufacturer']),  # Expecting manufacturer as an ObjectId string
         "category": data.get('category', product['category']),
         "price": data.get('price', product['price']),
         "description": data.get('description', product['description']),
@@ -82,6 +87,7 @@ def update_existing_product(product_id, data, user_id):
 
     products_collection.update_one({"_id": ObjectId(product_id)}, {"$set": updated_product})
     return updated_product, None
+
 
 def delete_existing_product(product_id, user_id):
     product = products_collection.find_one({"_id": ObjectId(product_id)})

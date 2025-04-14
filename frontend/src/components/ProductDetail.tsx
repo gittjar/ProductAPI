@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById } from '../services/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface Product {
   _id: string;
   name: string;
-  manufacturer: {
+  manufacturer?: {
     _id: string;
     name: string;
   };
@@ -24,6 +24,7 @@ interface Product {
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -114,13 +115,19 @@ const ProductDetail: React.FC = () => {
             Last Updated: {new Date(product.updated_at).toLocaleString()}
           </small>
         </div>
-        <button
-          className="btn btn-primary mt-2 mb-2 mx-2"
-          style={{ width: 'fit-content' }}
-          onClick={() => window.history.back()}
-        >
-          Back to Product List
-        </button>
+        <div className="d-flex justify-content-center mb-2">
+          <button
+            className="btn btn-primary mt-2 mx-2"
+            onClick={() => navigate(`/edit-product/${product._id}`)}          >
+            Edit Product
+          </button>
+          <button
+            className="btn btn-secondary mt-2 mx-2"
+            onClick={() => window.history.back()}
+          >
+            Back to Product List
+          </button>
+        </div>
       </div>
     </div>
   );

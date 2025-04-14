@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 interface Product {
   _id: string;
   name: string;
-  manufacturer: {
+  manufacturer?: {
     _id: string;
     name: string;
   };
