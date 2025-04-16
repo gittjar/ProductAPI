@@ -3,22 +3,26 @@ import React from 'react';
 interface ProductFormProps {
   product: any;
   manufacturers: { _id: string; name: string }[];
-  additionalImages: string[];
+  additionalImages: string[]; // Add this line
+  images: string[]; // Combined images array
   selectedManufacturerName: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => void;
-  onAdditionalImageChange: (index: number, value: string) => void;
+  onImageChange: (index: number, value: string) => void;
+  onAdditionalImageChange: (index: number, value: string) => void; // Add this line
   onAddImageField: () => void;
+  onRemoveImageField: (index: number) => void;
   onSubmit: (e: React.FormEvent) => void;
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
   product,
   manufacturers,
-  additionalImages,
+  images,
   selectedManufacturerName,
   onChange,
-  onAdditionalImageChange,
+  onImageChange,
   onAddImageField,
+  onRemoveImageField,
   onSubmit,
 }) => {
   return (
@@ -137,26 +141,24 @@ const ProductForm: React.FC<ProductFormProps> = ({
 
       <div className="form-group">
         <label>Images</label>
-        {product.images.map((image: string, index: number) => (
-          <input
-            key={index}
-            type="text"
-            className="form-control mb-2"
-            name={`image-${index}`}
-            value={image}
-            onChange={onChange}
-            placeholder={`Image URL ${index + 1}`}
-          />
-        ))}
-        {additionalImages.map((image, index) => (
-          <input
-            key={index}
-            type="text"
-            className="form-control mb-2"
-            value={image}
-            onChange={(e) => onAdditionalImageChange(index, e.target.value)}
-            placeholder={`Additional Image URL ${index + 1}`}
-          />
+        {images.map((image, index) => (
+          <div key={index} className="d-flex align-items-center mb-2">
+            <input
+              type="text"
+              className="form-control"
+              value={image}
+              onChange={(e) => onImageChange(index, e.target.value)}
+              placeholder={`Image URL ${index + 1}`}
+            />
+            <button
+              type="button"
+              className="btn btn-danger ml-2"
+              onClick={() => onRemoveImageField(index)}
+              disabled={images.length === 1} // Prevent removing the last image field
+            >
+              Remove
+            </button>
+          </div>
         ))}
         <button type="button" className="btn btn-secondary mt-2" onClick={onAddImageField}>
           + Add More Images
@@ -164,7 +166,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
       </div>
 
       <button type="submit" className="btn btn-primary mt-3">
-        Create
+        Save
       </button>
     </form>
   );

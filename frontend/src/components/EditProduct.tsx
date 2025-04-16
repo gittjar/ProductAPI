@@ -70,6 +70,12 @@ const EditProduct: React.FC = () => {
     setProduct({ ...product, [name]: newValue });
   };
 
+  const handleImageChange = (index: number, value: string) => {
+    const updatedImages = [...product.images];
+    updatedImages[index] = value;
+    setProduct({ ...product, images: updatedImages });
+  };
+
   const handleAdditionalImageChange = (index: number, value: string) => {
     const updatedImages = [...additionalImages];
     updatedImages[index] = value;
@@ -96,19 +102,32 @@ const EditProduct: React.FC = () => {
     }
   };
 
+  
+  const addImageField = () => {
+    setProduct({ ...product, images: [...product.images, ""] });
+  };
+  
+  const removeImageField = (index: number) => {
+    const updatedImages = product.images.filter((_, i) => i !== index);
+    setProduct({ ...product, images: updatedImages });
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4 text-center">Edit Product</h1>
       <ProductForm
-        product={product}
-        manufacturers={manufacturers}
-        additionalImages={additionalImages}
-        selectedManufacturerName={selectedManufacturerName}
-        onChange={handleChange}
-        onAdditionalImageChange={handleAdditionalImageChange}
-        onAddImageField={handleAddImageField}
-        onSubmit={handleSubmit}
-      />
+  product={product}
+  manufacturers={manufacturers}
+  additionalImages={additionalImages}
+  images={product.images} // Pass the images array
+  selectedManufacturerName={selectedManufacturerName}
+  onChange={handleChange}
+  onImageChange={handleImageChange}
+  onAdditionalImageChange={handleAdditionalImageChange}
+  onAddImageField={addImageField}
+  onRemoveImageField={removeImageField} // Pass the onRemoveImageField handler
+  onSubmit={handleSubmit}
+/>
     </div>
   );
 };

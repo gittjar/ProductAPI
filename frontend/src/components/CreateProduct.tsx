@@ -79,19 +79,33 @@ const CreateProduct: React.FC = () => {
     }
   };
 
+  const removeImageField = (index: number) => {
+    const updatedAdditionalImages = additionalImages.filter((_, i) => i !== index);
+    setAdditionalImages(updatedAdditionalImages);
+  };
+
+  const handleImageChange = (index: number, value: string) => {
+    const updatedImages = [...product.images];
+    updatedImages[index] = value;
+    setProduct({ ...product, images: updatedImages });
+  };
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4 text-center">Create Product</h1>
       <ProductForm
-        product={product}
-        manufacturers={manufacturers}
-        additionalImages={additionalImages}
-        selectedManufacturerName={selectedManufacturerName}
-        onChange={handleChange}
-        onAdditionalImageChange={handleAdditionalImageChange}
-        onAddImageField={addImageField}
-        onSubmit={handleSubmit}
-      />
+  product={product}
+  manufacturers={manufacturers}
+  additionalImages={additionalImages}
+  images={product.images} // Pass the images array
+  selectedManufacturerName={selectedManufacturerName}
+  onChange={handleChange}
+  onImageChange={handleImageChange}
+  onAdditionalImageChange={handleAdditionalImageChange}
+  onAddImageField={addImageField}
+  onRemoveImageField={removeImageField} // Pass the onRemoveImageField handler
+  onSubmit={handleSubmit}
+/>
     </div>
   );
 };
