@@ -57,30 +57,39 @@ const ProductList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {products.map((product, index) => (
-              <tr key={product._id}>
-                <th scope="row">{index + 1}</th>
-                <td>
-                  {product.images.length > 0 ? (
-                    <img
-                      src={product.images[0]}
-                      alt={product.name}
-                      style={{ width: '50px', height: '50px', objectFit: 'cover' }}
-                    />
-                  ) : (
-                    'No Image'
-                  )}
-                </td>
-                <td>
-                  <Link to={`/product/${product._id}`}>{product.name}</Link>
-                </td>
-                <td>{product.manufacturer?.name || 'Unknown'}</td>
-                <td>{product.category}</td>
-                <td>{product.price}</td>
-                <td>{product.varastossa ? 'Yes' : 'No'}</td>
-                <td>{product.quantity}</td>
-              </tr>
-            ))}
+            {products.map((product, index) => {
+              // Filter out empty or invalid image URLs
+              const validImages = product.images.filter((image) => image.trim() !== '');
+
+              return (
+                <tr key={product._id}>
+                  <th scope="row">{index + 1}</th>
+                  <td>
+                    {validImages.length > 0 ? (
+                      <img
+                        src={validImages[0]}
+                        alt={product.name}
+                        style={{ width: '50px', height: '50px', objectFit: 'cover' }}
+                        onError={(event) => {
+                          event.currentTarget.src = ''; // Fallback if image fails to load
+                          event.currentTarget.alt = 'No Image';
+                        }}
+                      />
+                    ) : (
+                      'No Image'
+                    )}
+                  </td>
+                  <td>
+                    <Link to={`/product/${product._id}`}>{product.name}</Link>
+                  </td>
+                  <td>{product.manufacturer?.name || 'Unknown'}</td>
+                  <td>{product.category}</td>
+                  <td>{product.price}</td>
+                  <td>{product.varastossa ? 'Yes' : 'No'}</td>
+                  <td>{product.quantity}</td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
