@@ -10,8 +10,9 @@ const getAuthHeaders = () => {
   };
 };
 
-export const getProducts = () => axios.get(`${API_URL}/products`);
 export const getManufacturers = () => axios.get(`${API_URL}/manufacturers`);
+export const addManufacturer = (manufacturer: any) => axios.post(`${API_URL}/manufacturers`, manufacturer, getAuthHeaders());
+export const getProducts = () => axios.get(`${API_URL}/products`);
 export const addProduct = (product: any) => axios.post(`${API_URL}/products`, product, getAuthHeaders());
 export const updateProduct = (productId: string, product: any) => axios.put(`${API_URL}/products/${productId}`, product, getAuthHeaders());
 export const deleteProduct = (productId: string) => axios.delete(`${API_URL}/products/${productId}`, getAuthHeaders());

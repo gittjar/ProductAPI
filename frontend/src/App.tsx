@@ -1,20 +1,22 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Home from './components/Home'; // New Home component
+import Home from './components/Home';
 import ProductList from './components/ProductList';
 import ProductDetail from './components/ProductDetail';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
 import CreateProduct from './components/CreateProduct';
 import EditProduct from './components/EditProduct';
-import Navbar from './components/Navbar'; 
+import Navbar from './components/Navbar';
+import CreateManufacturer from './components/CreateManufacturer'; // Import CreateManufacturer
+import ManufacturerList from './components/ManufacturerList'; // Import ManufacturerList
 
 const App: React.FC = () => {
   return (
     <Router>
-      <Navbar /> 
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Home />} /> {/* New Home component */}
+        <Route path="/" element={<Home />} />
         <Route path="/products" element={<ProductList />} />
         <Route path="/product/:id" element={<ProductDetail />} />
         <Route path="/login" element={<Login />} />
@@ -26,14 +28,31 @@ const App: React.FC = () => {
             </ProtectedRoute>
           }
         />
- <Route
-  path="/edit-product/:id"
-  element={
-    <ProtectedRoute>
-      <EditProduct />
-    </ProtectedRoute>
-  }
-/>
+        <Route
+          path="/edit-product/:id"
+          element={
+            <ProtectedRoute>
+              <EditProduct />
+            </ProtectedRoute>
+          }
+        />
+        {/* Manufacturers Routes */}
+        <Route
+          path="/manufacturers"
+          element={
+            <ProtectedRoute>
+              <ManufacturerList />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/manufacturers/create"
+          element={
+            <ProtectedRoute>
+              <CreateManufacturer />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
