@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById } from '../services/api';
+import { deleteProduct } from '../services/api';
+import ConfirmationDeleteProduct from '../modals/ConfirmationDeleteProduct';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import FeedbackModal from '../modals/FeedbackModal';
 
 interface Product {
   _id: string;
@@ -27,6 +30,7 @@ const ProductDetail: React.FC = () => {
   const navigate = useNavigate();
   const [product, setProduct] = useState<Product | null>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const placeholderImage = 'https://placehold.co/600x400/white/gray?text=No+Image+uploaded'; // Placeholder for broken images
 
@@ -47,6 +51,36 @@ const ProductDetail: React.FC = () => {
   if (!product) {
     return <div>Loading...</div>;
   }
+
+  const handleDelete = () => {
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!product) return;
+  
+    try {
+      await deleteProduct(product._id); // Call the delete API
+      console.log(`Product ${product.name} deleted successfully`);
+      setShowDeleteModal(false);
+      navigate('/products'); // Redirect to the products list page
+    } catch (error) {
+      console.error('Error deleting the product:', error);
+      alert('Failed to delete the product. Please try again.');
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteModal(false);
+  };
+  const handleCloseFeedback = () => {
+    setShowDeleteModal(false);
+  };
+  const handleClose = () => {
+    setShowDeleteModal(false);
+  };
+
+
 
 
 
@@ -151,6 +185,20 @@ const ProductDetail: React.FC = () => {
         >
           Back to Product List
         </button>
+
+        <button
+          className="btn btn-danger mt-2 mx-2"
+          onClick={handleDelete}
+        >
+          Delete Product
+        </button>
+
+        <ConfirmationDeleteProduct
+          show={showDeleteModal}
+          onClose={handleClose}
+          onConfirm={handleConfirmDelete}
+          productName={product.name}
+        />
       </div>
     </div>
   </div>
