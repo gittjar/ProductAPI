@@ -77,41 +77,69 @@ const ProductDetail: React.FC = () => {
 
   return (
     <div className="container d-flex justify-content-center align-items-center mb-4" style={{ marginTop: '100px' }}>
-      <div className={`card ${product.varastossa && product.quantity > 0 ? 'border-success' : 'border-danger'} rounded`} style={{ maxWidth: '600px', width: '100%' }}>
-        {selectedImage ? (
-          <div style={{ height: '400px', overflow: 'hidden' }}>
-            <img
-              src={selectedImage}
-              className="card-img-top"
-              alt={product.name}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              onError={(event) => {
-                event.currentTarget.src = placeholderImage;
-              }}
-            />
+    <div className={`card ${product.varastossa && product.quantity > 0 ? 'border-success' : 'border-danger'} rounded`} style={{ maxWidth: '600px', width: '100%' }}>
+      {selectedImage ? (
+        <div style={{ height: '400px', overflow: 'hidden' }}>
+          <img
+            src={selectedImage}
+            className="card-img-top"
+            alt={product.name}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            onError={(event) => {
+              event.currentTarget.src = placeholderImage; // Replace main image with placeholder
+            }}
+          />
+        </div>
+      ) : (
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{
+            height: '400px',
+            backgroundColor: '#f8f9fa',
+            color: '#6c757d',
+            fontSize: '18px',
+            fontStyle: 'italic',
+          }}
+        >
+          No image available
+        </div>
+      )}
+      <div className="card-body" style={{ padding: '0' }}>
+        <h5 className="card-title mb-4 mt-4 text-center" style={{ margin: '10px 0' }}>{product.name}</h5>
+        {product.images.filter((image) => image.trim() !== '').length > 0 ? (
+          <div className="d-flex flex-wrap justify-content-center mb-2">
+            {product.images
+              .filter((image) => image.trim() !== '') // Filter out empty strings
+              .map((image, index) => (
+                <img
+                  key={index}
+                  src={image}
+                  alt={`${product.name} ${index + 1}`}
+                  className={`img-thumbnail ${selectedImage === image ? 'border-primary' : ''}`}
+                  style={{
+                    width: '80px',
+                    height: '80px',
+                    cursor: 'pointer',
+                    objectFit: 'cover',
+                    margin: '2px',
+                  }}
+                  onClick={() => setSelectedImage(image)}
+                  onError={(event) => {
+                    event.currentTarget.style.display = 'none'; // Hide broken thumbnail
+                  }}
+                />
+              ))}
           </div>
         ) : (
-          <div
-            className="d-flex justify-content-center align-items-center"
-            style={{
-              height: '400px',
-              backgroundColor: '#f8f9fa',
-              color: '#6c757d',
-              fontSize: '18px',
-              fontStyle: 'italic',
-            }}
-          >
-            No image available
-          </div>
+          <p className="text-muted text-center rounded border border-danger m-2 p-2">No images available, please update product and add images.</p>
         )}
-        <div className="card-body" style={{ padding: '0' }}>
-          <h5 className="card-title mb-4 mt-4 text-center" style={{ margin: '10px 0' }}>{product.name}</h5>
-          <p className="card-text mb-1 border-bottom" style={{ margin: '0 10px' }}>
-            <strong>Manufacturer:</strong> {product.manufacturer?.name || 'Unknown'}
-          </p>
-          <p className="card-text mb-1" style={{ margin: '0 10px' }}>
-            <strong>Category:</strong> {product.category}
-          </p>
+        <p className="card-text mb-1 border-bottom" style={{ margin: '0 10px' }}>
+          <strong>Manufacturer:</strong> {product.manufacturer?.name || 'Unknown'}
+        </p>
+        <p className="card-text mb-1 list-group-item" style={{ margin: '0 10px' }}>
+          <strong>Category:</strong> {product.category}
+        </p>
+          
           <p className="card-text mb-1" style={{ margin: '0 10px' }}>
             <strong>Price:</strong> ${product.price}
           </p>
@@ -136,17 +164,17 @@ const ProductDetail: React.FC = () => {
             Last Updated: {new Date(product.updated_at).toLocaleString()}
           </small>
         </div>
-        <div className="d-flex justify-content-center mb-2">
+        <div className="d-flex justify-content-center">
           {isAuthenticated && (
             <>
               <button
-                className="btn btn-primary mt-2 mx-2"
+                className="btn btn-primary mt-4 mx-2 mb-4"
                 onClick={() => navigate(`/edit-product/${product._id}`)}
               >
                 Edit Product
               </button>
               <button
-                className="btn btn-danger mt-2 mx-2"
+                className="btn btn-danger mt-4 mx-2 mb-4"
                 onClick={handleDelete}
               >
                 Delete Product
@@ -154,7 +182,7 @@ const ProductDetail: React.FC = () => {
             </>
           )}
           <button
-            className="btn btn-secondary mt-2 mx-2"
+            className="btn btn-secondary mt-4 mx-2 mb-4"
             onClick={() => window.history.back()}
           >
             Back to Product List

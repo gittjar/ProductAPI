@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { getManufacturers, deleteManufacturer } from '../services/api';
 import ConfirmationDeleteManufacturer from '../modals/ConfirmationDeleteManufacturer';
 import FeedbackModal from '../modals/FeedbackModal';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link } from 'react-router-dom';
 
 const ManufacturerList: React.FC = () => {
   const [manufacturers, setManufacturers] = useState<any[]>([]);
@@ -112,7 +114,19 @@ const ManufacturerList: React.FC = () => {
         message={feedback.message}
         type={feedback.type as 'success' | 'warning'}
       />
+
+      {/* Add Manufacturer Button */}
+     
+      
+          <Link className="btn btn-primary mt-4 text-light" to="/manufacturers/create" >
+            Add Manufacturer
+          </Link>
+  
+      
+
+          
     </div>
+    
   );
 };
 
