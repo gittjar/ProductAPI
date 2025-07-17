@@ -9,6 +9,7 @@ import CreateProduct from './components/CreateProduct';
 import EditProduct from './components/EditProduct';
 import Navbar from './components/Navbar';
 import CreateManufacturer from './components/CreateManufacturer'; // Import CreateManufacturer
+import EditManufacturer from './components/EditManufacturer'; // Import EditManufacturer
 import ManufacturerList from './components/ManufacturerList'; // Import ManufacturerList
 
 const App: React.FC = () => {
@@ -50,6 +51,14 @@ const App: React.FC = () => {
           element={
             <ProtectedRoute>
               <CreateManufacturer />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/manufacturers/edit/:id"
+          element={
+            <ProtectedRoute>
+              <EditManufacturer />
             </ProtectedRoute>
           }
         />

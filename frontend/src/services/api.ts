@@ -11,7 +11,9 @@ const getAuthHeaders = () => {
 };
 
 export const getManufacturers = () => axios.get(`${API_URL}/manufacturers`);
+export const getManufacturerById = (id: string) => axios.get(`${API_URL}/manufacturers/${id}`);
 export const addManufacturer = (manufacturer: any) => axios.post(`${API_URL}/manufacturers`, manufacturer, getAuthHeaders());
+export const updateManufacturer = (manufacturerId: string, manufacturer: any) => axios.put(`${API_URL}/manufacturers/${manufacturerId}`, manufacturer, getAuthHeaders());
 export const deleteManufacturer = (manufacturerId: string) => axios.delete(`${API_URL}/manufacturers/${manufacturerId}`, getAuthHeaders());
 
 export const getProducts = () => axios.get(`${API_URL}/products`);

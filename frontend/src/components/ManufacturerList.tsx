@@ -3,13 +3,14 @@ import { getManufacturers, deleteManufacturer } from '../services/api';
 import ConfirmationDeleteManufacturer from '../modals/ConfirmationDeleteManufacturer';
 import FeedbackModal from '../modals/FeedbackModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const ManufacturerList: React.FC = () => {
   const [manufacturers, setManufacturers] = useState<any[]>([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedManufacturer, setSelectedManufacturer] = useState<any>(null);
   const [feedback, setFeedback] = useState({ show: false, type: '', title: '', message: '' });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchManufacturers = async () => {
@@ -51,6 +52,10 @@ const ManufacturerList: React.FC = () => {
     setShowDeleteModal(true);
   };
 
+  const handleEdit = (manufacturerId: string) => {
+    navigate(`/manufacturers/edit/${manufacturerId}`);
+  };
+
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6 text-center">Manufacturers</h1>
@@ -79,7 +84,7 @@ const ManufacturerList: React.FC = () => {
                 <td className="border border-gray-300 px-4 py-2">
                   <button
                     className="btn btn-secondary mx-2"
-                    onClick={() => console.log('Edit functionality here')}
+                    onClick={() => handleEdit(manufacturer._id)}
                   >
                     Edit
                   </button>
