@@ -1,5 +1,6 @@
 import axios from 'axios';
 import config from '../config';
+import { isAuthenticated, logout } from '../utils/auth';
 
 const API_URL = config.API_URL;
 
@@ -9,6 +10,33 @@ const getAuthHeaders = () => {
     headers: { Authorization: `Bearer ${token}` },
   };
 };
+
+// Add axios interceptor to handle token expiration
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token is invalid or expired
+      logout();
+      return Promise.reject(error);
+    }
+    return Promise.reject(error);
+  }
+);
+
+// Add axios interceptor to check token before making requests
+axios.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token && !isAuthenticated()) {
+      // Token is expired, logout immediately
+      logout();
+      return Promise.reject(new Error('Token expired'));
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
 
 export const getManufacturers = () => axios.get(`${API_URL}/manufacturers`);
 export const getManufacturerById = (id: string) => axios.get(`${API_URL}/manufacturers/${id}`);
