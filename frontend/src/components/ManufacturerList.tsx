@@ -116,15 +116,9 @@ const ManufacturerList: React.FC = () => {
       />
 
       {/* Add Manufacturer Button */}
-     
-      
           <Link className="btn btn-primary mt-4 text-light" to="/manufacturers/create" >
             Add Manufacturer
-          </Link>
-  
-      
-
-          
+          </Link>   
     </div>
     
   );
