@@ -9,6 +9,36 @@ export const isTokenExpired = (token: string): boolean => {
   }
 };
 
+export const getCurrentUserId = (): string | null => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    // Flask-JWT-Extended uses 'sub' for the identity
+    return payload.sub || payload.identity;
+  } catch (error) {
+    return null;
+  }
+};
+
+export const getCurrentUserRole = (): string | null => {
+  try {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    // Custom claim for user role
+    return payload.role || 'user';
+  } catch (error) {
+    return 'user';
+  }
+};
+
+export const isCurrentUserAdmin = (): boolean => {
+  return getCurrentUserRole() === 'admin';
+};
+
 export const getTokenExpirationTime = (token: string): number | null => {
   try {
     const payload = JSON.parse(atob(token.split('.')[1]));

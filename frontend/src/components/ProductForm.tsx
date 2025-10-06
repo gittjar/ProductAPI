@@ -12,6 +12,7 @@ interface ProductFormProps {
   onAddImageField: () => void;
   onRemoveImageField: (index: number) => void;
   onSubmit: (e: React.FormEvent) => void;
+  loading?: boolean;
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
@@ -24,6 +25,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
   onAddImageField,
   onRemoveImageField,
   onSubmit,
+  loading = false,
 }) => {
   return (
     <form onSubmit={onSubmit}>
@@ -165,8 +167,12 @@ const ProductForm: React.FC<ProductFormProps> = ({
         </button>
       </div>
 
-      <button type="submit" className="btn btn-primary mt-3">
-        Save
+      <button 
+        type="submit" 
+        className="btn btn-primary mt-3"
+        disabled={loading}
+      >
+        {loading ? 'Saving...' : 'Save'}
       </button>
     </form>
   );

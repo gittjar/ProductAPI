@@ -51,6 +51,8 @@ export const deleteProduct = (productId: string) => axios.delete(`${API_URL}/pro
 
 export const loginUser = (credentials: { username: string; password: string }) => axios.post(`${API_URL}/login`, credentials);
 export const registerUser = (userData: { username: string; password: string }) => axios.post(`${API_URL}/register`, userData);
+export const getCurrentUser = () => axios.get(`${API_URL}/me`, getAuthHeaders());
+export const getUserById = (userId: string) => axios.get(`${API_URL}/user/${userId}`);
 
 export const getUserProducts = () => {
   return axios.get(`${API_URL}/user/products`, getAuthHeaders());

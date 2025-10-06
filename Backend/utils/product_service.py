@@ -1,6 +1,6 @@
 from bson import ObjectId
 from datetime import datetime
-from utils.database import products_collection, manufacturers_collection
+from utils.database import products_collection, manufacturers_collection, users_collection
 
 
 def get_all_products():
@@ -9,6 +9,8 @@ def get_all_products():
     for product in products:
         # Convert ObjectId to string
         product['_id'] = str(product['_id'])
+        
+        # Fetch manufacturer details
         if 'manufacturer' in product and ObjectId.is_valid(product['manufacturer']):
             manufacturer = manufacturers_collection.find_one({"_id": ObjectId(product['manufacturer'])})
             if manufacturer:
@@ -16,6 +18,18 @@ def get_all_products():
                     "_id": str(manufacturer['_id']),
                     "name": manufacturer['name']
                 }
+        
+        # Fetch user details (product owner)
+        if 'user_id' in product and ObjectId.is_valid(product['user_id']):
+            user = users_collection.find_one({"_id": ObjectId(product['user_id'])})
+            if user:
+                product['owner'] = {
+                    "_id": str(user['_id']),
+                    "username": user['username']
+                }
+            # Keep user_id for ownership checking on frontend
+            product['user_id'] = str(product['user_id'])
+        
         all_products.append(product)
     return all_products
 
@@ -67,7 +81,12 @@ def update_existing_product(product_id, data, user_id):
     if not product:
         return None, 'Product not found'
 
-    if product['user_id'] != user_id:
+    # Check if user is the owner or an admin
+    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    is_admin = user and user.get('role') == 'admin'
+    is_owner = product['user_id'] == user_id
+    
+    if not (is_owner or is_admin):
         return None, 'Unauthorized'
 
     updated_product = {
@@ -82,7 +101,7 @@ def update_existing_product(product_id, data, user_id):
         "varastossa": data.get('varastossa', product['varastossa']),
         "quantity": data.get('quantity', product['quantity']),
         "updated_at": datetime.utcnow(),  # Update the timestamp to the current time
-        "user_id": user_id  # Ensure the user ID remains the same
+        "user_id": product['user_id']  # Keep the original owner
     }
 
     products_collection.update_one({"_id": ObjectId(product_id)}, {"$set": updated_product})
@@ -95,7 +114,12 @@ def delete_existing_product(product_id, user_id):
     if not product:
         return 'Product not found'
 
-    if product['user_id'] != user_id:
+    # Check if user is the owner or an admin
+    user = users_collection.find_one({"_id": ObjectId(user_id)})
+    is_admin = user and user.get('role') == 'admin'
+    is_owner = product['user_id'] == user_id
+    
+    if not (is_owner or is_admin):
         return 'Unauthorized'
 
     products_collection.delete_one({"_id": ObjectId(product_id)})

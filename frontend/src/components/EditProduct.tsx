@@ -34,6 +34,8 @@ const EditProduct: React.FC = () => {
   const [manufacturers, setManufacturers] = useState<{ _id: string; name: string }[]>([]);
   const [additionalImages, setAdditionalImages] = useState<string[]>([]);
   const [selectedManufacturerName, setSelectedManufacturerName] = useState<string>('');
+  const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -88,6 +90,9 @@ const EditProduct: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    setLoading(true);
+    
     if (id) {
       try {
         const updatedProduct = {
@@ -98,11 +103,23 @@ const EditProduct: React.FC = () => {
         navigate('/');
       } catch (error) {
         console.error('There was an error updating the product!', error);
+        
+        // Handle specific error messages
+        if ((error as any).response?.status === 403) {
+          setError('You are not authorized to edit this product. You can only edit products you created.');
+        } else if ((error as any).response?.status === 401) {
+          setError('Your session has expired. Please log in again.');
+        } else if ((error as any).response?.data?.message) {
+          setError((error as any).response.data.message);
+        } else {
+          setError('There was an error updating the product. Please try again.');
+        }
+      } finally {
+        setLoading(false);
       }
     }
   };
 
-  
   const addImageField = () => {
     setProduct({ ...product, images: [...product.images, ""] });
   };
@@ -117,19 +134,27 @@ const EditProduct: React.FC = () => {
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4 text-center">Edit Product</h1>
+      
+      {error && (
+        <div className="alert alert-danger mb-4" role="alert">
+          {error}
+        </div>
+      )}
+      
       <ProductForm
-  product={product}
-  manufacturers={manufacturers}
-  additionalImages={additionalImages}
-  images={product.images} // Pass the images array
-  selectedManufacturerName={selectedManufacturerName}
-  onChange={handleChange}
-  onImageChange={handleImageChange}
-  onAdditionalImageChange={handleAdditionalImageChange}
-  onAddImageField={addImageField}
-  onRemoveImageField={removeImageField} // Pass the onRemoveImageField handler
-  onSubmit={handleSubmit}
-/>
+        product={product}
+        manufacturers={manufacturers}
+        additionalImages={additionalImages}
+        images={product.images} // Pass the images array
+        selectedManufacturerName={selectedManufacturerName}
+        onChange={handleChange}
+        onImageChange={handleImageChange}
+        onAdditionalImageChange={handleAdditionalImageChange}
+        onAddImageField={addImageField}
+        onRemoveImageField={removeImageField} // Pass the onRemoveImageField handler
+        onSubmit={handleSubmit}
+        loading={loading}
+      />
     </div>
   );
 };
