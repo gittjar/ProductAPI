@@ -18,6 +18,7 @@ export const getCurrentUserId = (): string | null => {
     // Flask-JWT-Extended uses 'sub' for the identity
     return payload.sub || payload.identity;
   } catch (error) {
+    console.error('Error parsing JWT token:', error);
     return null;
   }
 };

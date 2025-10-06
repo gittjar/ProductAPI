@@ -39,8 +39,7 @@ def get_product_by_id(product_id):
     if product:
         # Convert ObjectId to string
         product['_id'] = str(product['_id'])
-        product.pop('user_id', None)  # Safely remove user_id from the response if it exists
-
+        
         # Fetch manufacturer details
         if 'manufacturer' in product and ObjectId.is_valid(product['manufacturer']):
             manufacturer = manufacturers_collection.find_one({"_id": ObjectId(product['manufacturer'])})
@@ -49,6 +48,18 @@ def get_product_by_id(product_id):
                     "_id": str(manufacturer['_id']),
                     "name": manufacturer['name']
                 }
+        
+        # Fetch user details (product owner) - same as in get_all_products
+        if 'user_id' in product and ObjectId.is_valid(product['user_id']):
+            user = users_collection.find_one({"_id": ObjectId(product['user_id'])})
+            if user:
+                product['owner'] = {
+                    "_id": str(user['_id']),
+                    "username": user['username']
+                }
+            # Keep user_id for ownership checking on frontend
+            product['user_id'] = str(product['user_id'])
+        
         return product, None
     else:
         return None, 'Product not found'
