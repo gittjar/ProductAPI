@@ -1,9 +1,8 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 const Navbar: React.FC = () => {
-  const navigate = useNavigate();
   const { isLoggedIn, username, logout } = useAuth();
 
   const handleLogout = () => {
@@ -66,9 +65,14 @@ const Navbar: React.FC = () => {
             </>
           )}
           {!isLoggedIn && (
-            <li className="nav-item">
-              <Link className="nav-link" to="/login">Login</Link>
-            </li>
+            <>
+              <li className="nav-item">
+                <Link className="nav-link" to="/login">Login</Link>
+              </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/register">Register</Link>
+              </li>
+            </>
           )}
         </ul>
       </div>

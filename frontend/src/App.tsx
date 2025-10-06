@@ -5,6 +5,7 @@ import Home from './components/Home';
 import ProductList from './components/ProductList';
 import ProductDetail from './components/ProductDetail';
 import Login from './components/Login';
+import Register from './components/Register';
 import ProtectedRoute from './components/ProtectedRoute';
 import CreateProduct from './components/CreateProduct';
 import EditProduct from './components/EditProduct';
@@ -23,6 +24,7 @@ const App: React.FC = () => {
           <Route path="/products" element={<ProductList />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route
             path="/create"
             element={

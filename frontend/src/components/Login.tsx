@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { loginUser } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -50,6 +50,10 @@ const Login: React.FC = () => {
         </div>
         <button type="submit" className="btn btn-primary mt-3">Login</button>
       </form>
+      
+      <div className="text-center mt-3">
+        <p>Don't have an account? <Link to="/register">Register here</Link></p>
+      </div>
     </div>
   );
 };
