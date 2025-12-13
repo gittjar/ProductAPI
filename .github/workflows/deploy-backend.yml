@@ -12,7 +12,6 @@ on:
 env:
   AZURE_WEBAPP_NAME: product-api-backend      # Azure Web App name
   PYTHON_VERSION: '3.11'                       # Python version
-  WORKING_DIRECTORY: './backend'
 
 jobs:
   build-and-deploy:
@@ -28,14 +27,14 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
 
     - name: Create and start virtual environment
-      working-directory: ${{ env.WORKING_DIRECTORY }}
       run: |
+        cd backend
         python -m venv venv
         source venv/bin/activate
 
     - name: Install dependencies
-      working-directory: ${{ env.WORKING_DIRECTORY }}
       run: |
+        cd backend
         source venv/bin/activate
         pip install --upgrade pip
         pip install -r ../requirements.txt
@@ -48,8 +47,8 @@ jobs:
     #     pytest
 
     - name: Zip artifact for deployment
-      working-directory: ${{ env.WORKING_DIRECTORY }}
       run: |
+        cd backend
         zip -r ../backend-release.zip . -x "*.git*" -x "*__pycache__*" -x "*.pyc"
 
     - name: Upload artifact for deployment jobs
