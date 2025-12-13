@@ -21,20 +21,27 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: List workspace contents
+      run: |
+        echo "Current directory: $PWD"
+        ls -la
+        echo "Checking for backend directory:"
+        ls -la backend/ || echo "Backend directory not found!"
+
     - name: Set up Python version
       uses: actions/setup-python@v5
       with:
         python-version: ${{ env.PYTHON_VERSION }}
 
     - name: Create and start virtual environment
+      working-directory: ./backend
       run: |
-        cd backend
         python -m venv venv
         source venv/bin/activate
 
     - name: Install dependencies
+      working-directory: ./backend
       run: |
-        cd backend
         source venv/bin/activate
         pip install --upgrade pip
         pip install -r ../requirements.txt
@@ -47,8 +54,8 @@ jobs:
     #     pytest
 
     - name: Zip artifact for deployment
+      working-directory: ./backend
       run: |
-        cd backend
         zip -r ../backend-release.zip . -x "*.git*" -x "*__pycache__*" -x "*.pyc"
 
     - name: Upload artifact for deployment jobs
