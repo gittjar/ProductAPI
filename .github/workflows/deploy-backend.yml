@@ -34,13 +34,13 @@ jobs:
         python-version: ${{ env.PYTHON_VERSION }}
 
     - name: Create and start virtual environment
-      working-directory: ./backend
+      working-directory: backend
       run: |
         python -m venv venv
         source venv/bin/activate
 
     - name: Install dependencies
-      working-directory: ./backend
+      working-directory: backend
       run: |
         source venv/bin/activate
         pip install --upgrade pip
@@ -54,7 +54,7 @@ jobs:
     #     pytest
 
     - name: Zip artifact for deployment
-      working-directory: ./backend
+      working-directory: backend
       run: |
         zip -r ../backend-release.zip . -x "*.git*" -x "*__pycache__*" -x "*.pyc"
 
