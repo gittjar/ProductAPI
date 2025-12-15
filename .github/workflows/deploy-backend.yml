@@ -10,7 +10,7 @@ on:
   workflow_dispatch:  # Allows manual trigger from GitHub Actions tab
 
 env:
-  AZURE_WEBAPP_NAME: product-api-backend      # Azure Web App name
+  AZURE_WEBAPP_NAME: product-api-backend-sweden      # Azure Web App name
   PYTHON_VERSION: '3.11'                       # Python version
 
 jobs:

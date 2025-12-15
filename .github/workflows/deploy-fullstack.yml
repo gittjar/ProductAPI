@@ -15,8 +15,8 @@ on:
         default: true
 
 env:
-  AZURE_WEBAPP_NAME_BACKEND: product-api-backend
-  AZURE_WEBAPP_NAME_FRONTEND: product-api-frontend
+  AZURE_WEBAPP_NAME_BACKEND: product-api-backend-sweden
+  AZURE_WEBAPP_NAME_FRONTEND: product-api-frontend-sweden
   PYTHON_VERSION: '3.11'
   NODE_VERSION: '20.x'
 

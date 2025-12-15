@@ -10,7 +10,7 @@ on:
   workflow_dispatch:  # Allows manual trigger from GitHub Actions tab
 
 env:
-  AZURE_WEBAPP_NAME: product-api-frontend     # Azure Web App name
+  AZURE_WEBAPP_NAME: product-api-frontend-sweden     # Azure Web App name
   NODE_VERSION: '20.x'                          # Node.js version
 
 jobs:
