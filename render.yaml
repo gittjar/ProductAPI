@@ -1,0 +1,29 @@
+services:
+  # Backend API
+  - type: web
+    name: productapi-backend
+    env: python
+    region: frankfurt  # Closest to you
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "cd backend && gunicorn --bind 0.0.0.0:$PORT app:app"
+    envVars:
+      - key: MONGO_URI
+        sync: false  # Set manually in Render dashboard
+      - key: JWT_SECRET_KEY
+        sync: false
+      - key: FLASK_ENV
+        value: production
+      - key: PYTHON_VERSION
+        value: 3.11.0
+    healthCheckPath: /products
+
+  # Frontend
+  - type: web
+    name: productapi-frontend
+    env: static
+    region: frankfurt
+    buildCommand: "cd frontend && npm install && npm run build"
+    staticPublishPath: frontend/build
+    envVars:
+      - key: REACT_APP_API_URL
+        sync: false  # Will be set to backend URL
