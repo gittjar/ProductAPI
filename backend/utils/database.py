@@ -1,10 +1,12 @@
 from pymongo import MongoClient
 from config import Config
+import certifi
 
 # Use connect=False to delay connection until first operation
 client = MongoClient(
     Config.MONGO_URI,
     connect=False,  # Lazy connection
+    tlsCAFile=certifi.where(),  # Use certifi for SSL certificates
     serverSelectionTimeoutMS=5000,
     connectTimeoutMS=5000,
     socketTimeoutMS=5000
