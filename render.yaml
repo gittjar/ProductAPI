@@ -3,6 +3,7 @@ services:
   - type: web
     name: productapi-backend
     env: python
+    plan: free  # Free tier
     region: frankfurt  # Closest to you
     buildCommand: "pip install -r requirements.txt"
     startCommand: "cd backend && gunicorn --bind 0.0.0.0:$PORT app:app"
@@ -21,6 +22,7 @@ services:
   - type: web
     name: productapi-frontend
     env: static
+    plan: free  # Free tier
     buildCommand: "cd frontend && npm install && npm run build"
     staticPublishPath: frontend/build
     envVars:
