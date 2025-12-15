@@ -1,20 +1,11 @@
 from pymongo import MongoClient
 from config import Config
-import certifi
-import ssl
 
 # Use connect=False to delay connection until first operation
-# Create SSL context that's more permissive for cloud environments
-ssl_context = ssl.create_default_context(cafile=certifi.where())
-ssl_context.check_hostname = False
-ssl_context.verify_mode = ssl.CERT_NONE
-
+# Simple connection without custom SSL context - let pymongo handle it
 client = MongoClient(
     Config.MONGO_URI,
-    connect=False,  # Lazy connection
-    tls=True,
-    tlsAllowInvalidCertificates=True,
-    tlsAllowInvalidHostnames=True,
+    connect=False,
     serverSelectionTimeoutMS=10000,
     connectTimeoutMS=10000,
     socketTimeoutMS=10000
