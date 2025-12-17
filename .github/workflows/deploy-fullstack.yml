@@ -1,0 +1,117 @@
+name: Deploy Full Stack to Azure
+
+on:
+  workflow_dispatch:  # Manual trigger only
+    inputs:
+      deploy-backend:
+        description: 'Deploy Backend'
+        required: true
+        type: boolean
+        default: true
+      deploy-frontend:
+        description: 'Deploy Frontend'
+        required: true
+        type: boolean
+        default: true
+
+env:
+  AZURE_WEBAPP_NAME_BACKEND: product-api-backend-sweden
+  AZURE_WEBAPP_NAME_FRONTEND: product-api-frontend-sweden
+  PYTHON_VERSION: '3.11'
+  NODE_VERSION: '20.x'
+
+jobs:
+  deploy-backend:
+    if: ${{ inputs.deploy-backend }}
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python version
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+
+    - name: Create and start virtual environment
+      working-directory: ./backend
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+
+    - name: Install dependencies
+      working-directory: ./backend
+      run: |
+        source venv/bin/activate
+        pip install --upgrade pip
+        pip install -r ../requirements.txt
+
+    - name: Zip artifact for deployment
+      working-directory: ./backend
+      run: |
+        zip -r ../backend-release.zip . -x "*.git*" -x "*__pycache__*" -x "*.pyc"
+
+    - name: Upload artifact for deployment jobs
+      uses: actions/upload-artifact@v4
+      with:
+        name: python-app
+        path: backend-release.zip
+
+    - name: Deploy to Azure Web App
+      id: deploy-backend
+      uses: azure/webapps-deploy@v3
+      with:
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_BACKEND }}
+        package: 'backend-release.zip'
+
+    - name: Clean up
+      run: rm backend-release.zip
+
+  deploy-frontend:
+    if: ${{ inputs.deploy-frontend }}
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js version
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        cache-dependency-path: ./frontend/package-lock.json
+
+    - name: Install dependencies
+      working-directory: ./frontend
+      run: npm ci
+
+    - name: Build application
+      working-directory: ./frontend
+      run: npm run build
+      env:
+        CI: false
+        REACT_APP_API_URL: ${{ secrets.REACT_APP_API_URL }}
+
+    - name: Zip artifact for deployment
+      working-directory: ./frontend
+      run: |
+        cd build
+        zip -r ../../frontend-release.zip . -x "*.git*"
+
+    - name: Upload artifact for deployment jobs
+      uses: actions/upload-artifact@v4
+      with:
+        name: react-app
+        path: frontend-release.zip
+
+    - name: Deploy to Azure Web App
+      id: deploy-frontend
+      uses: azure/webapps-deploy@v3
+      with:
+        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE_FRONTEND }}
+        package: 'frontend-release.zip'
+
+    - name: Clean up
+      run: rm frontend-release.zip

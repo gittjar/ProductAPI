@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getProducts, deleteProduct } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { getCurrentUserId, isCurrentUserAdmin } from '../utils/auth';
+import LoadingSpinner from './LoadingSpinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface Product {
@@ -78,13 +79,7 @@ const ProductList: React.FC = () => {
   };
 
   if (loading) {
-    return (
-      <div className="container mx-auto p-4 text-center">
-        <div className="spinner-border" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
-    );
+    return <LoadingSpinner message="Loading products..." />;
   }
 
   return (
