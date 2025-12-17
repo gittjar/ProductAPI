@@ -8,8 +8,8 @@ from routes.manufacturers import manufacturers_bp
 
 app = Flask(__name__)
 app.config.from_object(Config)
-# CORS(app)  # Enable CORS for all routes
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+# Allow CORS from both localhost and production frontend
+CORS(app, resources={r"/*": {"origins": ["http://localhost:3000", "https://productapi-frontend-7ogm.onrender.com"]}})
 
 jwt = JWTManager(app)
 
