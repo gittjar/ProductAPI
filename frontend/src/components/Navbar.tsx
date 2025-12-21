@@ -36,6 +36,12 @@ const Navbar: React.FC = () => {
               <li className="nav-item">
                 <Link className="nav-link" to="/create">Create Product</Link>
               </li>
+              <li className="nav-item">
+                <Link className="nav-link" to="/my-page">
+                  <i className="bi bi-person-circle me-1"></i>
+                  My Page
+                </Link>
+              </li>
               {/* Manufacturers Dropdown */}
               <li className="nav-item dropdown">
                 <Link

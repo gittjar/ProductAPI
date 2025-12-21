@@ -65,3 +65,38 @@ def get_current_user():
         return jsonify({'message': 'User not found'}), 404
     except Exception as e:
         return jsonify({'message': 'Error fetching user data'}), 500
+
+@auth_bp.route('/change-password', methods=['PUT'])
+@jwt_required()
+def change_password():
+    try:
+        user_id = get_jwt_identity()
+        data = request.json
+        
+        # Validate input
+        if not data.get('current_password') or not data.get('new_password'):
+            return jsonify({'message': 'Current password and new password are required'}), 400
+        
+        # Validate password length (minimum 5 characters)
+        if len(data['new_password']) < 5:
+            return jsonify({'message': 'Password must be at least 5 characters long'}), 400
+        
+        # Get user from database
+        user = users_collection.find_one({'_id': ObjectId(user_id)})
+        if not user:
+            return jsonify({'message': 'User not found'}), 404
+        
+        # Verify current password
+        if not bcrypt.check_password_hash(user['password'], data['current_password']):
+            return jsonify({'message': 'Current password is incorrect'}), 401
+        
+        # Hash new password and update
+        hashed_password = bcrypt.generate_password_hash(data['new_password']).decode('utf-8')
+        users_collection.update_one(
+            {'_id': ObjectId(user_id)},
+            {'$set': {'password': hashed_password}}
+        )
+        
+        return jsonify({'message': 'Password changed successfully'}), 200
+    except Exception as e:
+        return jsonify({'message': 'Error changing password'}), 500

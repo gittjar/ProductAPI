@@ -53,6 +53,7 @@ export const loginUser = (credentials: { username: string; password: string }) =
 export const registerUser = (userData: { username: string; password: string }) => axios.post(`${API_URL}/register`, userData);
 export const getCurrentUser = () => axios.get(`${API_URL}/me`, getAuthHeaders());
 export const getUserById = (userId: string) => axios.get(`${API_URL}/user/${userId}`);
+export const changePassword = (passwordData: { current_password: string; new_password: string }) => axios.put(`${API_URL}/change-password`, passwordData, getAuthHeaders());
 
 export const getUserProducts = () => {
   return axios.get(`${API_URL}/user/products`, getAuthHeaders());

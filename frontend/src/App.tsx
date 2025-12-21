@@ -13,6 +13,7 @@ import Navbar from './components/Navbar';
 import CreateManufacturer from './components/CreateManufacturer'; // Import CreateManufacturer
 import EditManufacturer from './components/EditManufacturer'; // Import EditManufacturer
 import ManufacturerList from './components/ManufacturerList'; // Import ManufacturerList
+import MyPage from './components/MyPage'; // Import MyPage
 
 const App: React.FC = () => {
   return (
@@ -63,6 +64,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <EditManufacturer />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-page"
+            element={
+              <ProtectedRoute>
+                <MyPage />
               </ProtectedRoute>
             }
           />
