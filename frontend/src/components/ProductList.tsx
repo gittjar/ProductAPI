@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getProducts, deleteProduct } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from '../contexts/ToastContext';
 import { getCurrentUserId, isCurrentUserAdmin } from '../utils/auth';
 import LoadingSpinner from './LoadingSpinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -34,6 +35,7 @@ const ProductList: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const { isLoggedIn } = useAuth();
+  const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
   const currentUserId = getCurrentUserId();
   const isAdmin = isCurrentUserAdmin();
@@ -65,9 +67,12 @@ const ProductList: React.FC = () => {
       try {
         await deleteProduct(productId);
         setProducts(products.filter(product => product._id !== productId));
+        showSuccess(`Product "${productName}" deleted successfully!`);
       } catch (error) {
         console.error('Error deleting product:', error);
-        setError('Failed to delete product');
+        const errorMsg = 'Failed to delete product';
+        setError(errorMsg);
+        showError(errorMsg);
       }
     }
   };

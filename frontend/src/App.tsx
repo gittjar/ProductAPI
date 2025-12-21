@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ToastProvider } from './contexts/ToastContext';
 import Home from './components/Home';
 import ProductList from './components/ProductList';
 import ProductDetail from './components/ProductDetail';
@@ -18,11 +19,12 @@ import MyPage from './components/MyPage'; // Import MyPage
 const App: React.FC = () => {
   return (
     <AuthProvider>
-      <Router>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/products" element={<ProductList />} />
+      <ToastProvider>
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/products" element={<ProductList />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
@@ -77,6 +79,7 @@ const App: React.FC = () => {
           />
         </Routes>
       </Router>
+      </ToastProvider>
     </AuthProvider>
   );
 };

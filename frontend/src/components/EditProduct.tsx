@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getProductById, updateProduct, getManufacturers } from '../services/api';
+import { useToast } from '../contexts/ToastContext';
 import ProductForm from './ProductForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -37,6 +38,7 @@ const EditProduct: React.FC = () => {
   const [error, setError] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(false);
   const navigate = useNavigate();
+  const { showSuccess, showError } = useToast();
 
   useEffect(() => {
     if (id) {
@@ -100,19 +102,28 @@ const EditProduct: React.FC = () => {
           images: [...product.images, ...additionalImages],
         };
         await updateProduct(id, updatedProduct);
-        navigate('/');
+        showSuccess('Product updated successfully!');
+        setTimeout(() => navigate('/'), 1000);
       } catch (error) {
         console.error('There was an error updating the product!', error);
         
         // Handle specific error messages
         if ((error as any).response?.status === 403) {
-          setError('You are not authorized to edit this product. You can only edit products you created.');
+          const errorMsg = 'You are not authorized to edit this product. You can only edit products you created.';
+          setError(errorMsg);
+          showError(errorMsg);
         } else if ((error as any).response?.status === 401) {
-          setError('Your session has expired. Please log in again.');
+          const errorMsg = 'Your session has expired. Please log in again.';
+          setError(errorMsg);
+          showError(errorMsg);
         } else if ((error as any).response?.data?.message) {
-          setError((error as any).response.data.message);
+          const errorMsg = (error as any).response.data.message;
+          setError(errorMsg);
+          showError(errorMsg);
         } else {
-          setError('There was an error updating the product. Please try again.');
+          const errorMsg = 'There was an error updating the product. Please try again.';
+          setError(errorMsg);
+          showError(errorMsg);
         }
       } finally {
         setLoading(false);

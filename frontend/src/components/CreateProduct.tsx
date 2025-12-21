@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { addProduct, getManufacturers } from '../services/api';
+import { useToast } from '../contexts/ToastContext';
 import ProductForm from './ProductForm';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
@@ -21,6 +22,7 @@ const CreateProduct: React.FC = () => {
   const [selectedManufacturerName, setSelectedManufacturerName] = useState<string>('');
   const [additionalImages, setAdditionalImages] = useState<string[]>([]);
   const navigate = useNavigate();
+  const { showSuccess, showError } = useToast();
 
   useEffect(() => {
     const fetchManufacturers = async () => {
@@ -73,9 +75,11 @@ const CreateProduct: React.FC = () => {
         images: [...product.images, ...additionalImages.filter((img) => img)],
       };
       await addProduct(finalProduct);
-      navigate('/');
+      showSuccess('Product created successfully!');
+      setTimeout(() => navigate('/'), 1000);
     } catch (error) {
       console.error('There was an error creating the product!', error);
+      showError('Failed to create product. Please try again.');
     }
   };
 
