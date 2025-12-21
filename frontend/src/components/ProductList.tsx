@@ -5,6 +5,7 @@ import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
 import { getCurrentUserId, isCurrentUserAdmin } from '../utils/auth';
 import LoadingSpinner from './LoadingSpinner';
+import ConfirmationModal from './ConfirmationModal';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 interface Product {
@@ -34,6 +35,8 @@ const ProductList: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [productToDelete, setProductToDelete] = useState<{ id: string; name: string } | null>(null);
   const { isLoggedIn } = useAuth();
   const { showSuccess, showError } = useToast();
   const navigate = useNavigate();
@@ -63,17 +66,25 @@ const ProductList: React.FC = () => {
   };
 
   const handleDelete = async (productId: string, productName: string) => {
-    if (window.confirm(`Are you sure you want to delete "${productName}"?`)) {
-      try {
-        await deleteProduct(productId);
-        setProducts(products.filter(product => product._id !== productId));
-        showSuccess(`Product "${productName}" deleted successfully!`);
-      } catch (error) {
-        console.error('Error deleting product:', error);
-        const errorMsg = 'Failed to delete product';
-        setError(errorMsg);
-        showError(errorMsg);
-      }
+    setProductToDelete({ id: productId, name: productName });
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!productToDelete) return;
+    
+    try {
+      await deleteProduct(productToDelete.id);
+      setProducts(products.filter(product => product._id !== productToDelete.id));
+      showSuccess(`Product "${productToDelete.name}" deleted successfully!`);
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      const errorMsg = 'Failed to delete product';
+      setError(errorMsg);
+      showError(errorMsg);
+    } finally {
+      setShowDeleteModal(false);
+      setProductToDelete(null);
     }
   };
 
@@ -192,6 +203,21 @@ const ProductList: React.FC = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showDeleteModal}
+        title="Delete Product"
+        message={`Are you sure you want to delete "${productToDelete?.name}"? This action cannot be undone.`}
+        confirmText="Delete"
+        cancelText="Cancel"
+        type="danger"
+        onConfirm={confirmDelete}
+        onCancel={() => {
+          setShowDeleteModal(false);
+          setProductToDelete(null);
+        }}
+      />
     </div>
   );
 };
