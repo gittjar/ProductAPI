@@ -101,10 +101,10 @@ const MyPage: React.FC = () => {
         setShowPasswordForm(false);
         setPasswordSuccess('');
       }, 2000);
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error changing password:', error);
       setPasswordError(
-        error.response?.data?.message || 'Failed to change password'
+        (error as any).response?.data?.message || 'Failed to change password'
       );
     } finally {
       setChangingPassword(false);
@@ -359,7 +359,7 @@ const MyPage: React.FC = () => {
                           </span>
                         </td>
                         <td>{product.manufacturer?.name || 'N/A'}</td>
-                        <td className="fw-semibold">${product.price.toFixed(2)}</td>
+                        <td className="fw-semibold">${Number(product.price).toFixed(2)}</td>
                         <td>
                           <Link
                             to={`/edit-product/${product._id}`}
