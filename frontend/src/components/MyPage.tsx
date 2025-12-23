@@ -323,7 +323,7 @@ const MyPage: React.FC = () => {
               <div className="text-center py-5">
                 <i className="bi bi-inbox" style={{ fontSize: '4rem', color: '#ccc' }}></i>
                 <p className="text-muted mt-3">You haven't added any products yet</p>
-                <Link to="/create-product" className="btn btn-primary">
+                <Link to="/create" className="btn btn-primary">
                   <i className="bi bi-plus-circle me-2"></i>
                   Add Your First Product
                 </Link>
