@@ -31,6 +31,12 @@ const Navbar: React.FC = () => {
           <li className="nav-item">
             <Link className="nav-link" to="/products">All Products</Link>
           </li>
+          <li className="nav-item">
+            <Link className="nav-link" to="/api-viewer">
+              <i className="bi bi-code-square me-1"></i>
+              API Data
+            </Link>
+          </li>
           {isLoggedIn && (
             <>
               <li className="nav-item">

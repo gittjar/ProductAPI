@@ -15,6 +15,7 @@ import CreateManufacturer from './components/CreateManufacturer'; // Import Crea
 import EditManufacturer from './components/EditManufacturer'; // Import EditManufacturer
 import ManufacturerList from './components/ManufacturerList'; // Import ManufacturerList
 import MyPage from './components/MyPage'; // Import MyPage
+import ApiViewer from './components/ApiViewer'; // Import ApiViewer
 
 const App: React.FC = () => {
   return (
@@ -25,6 +26,7 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/products" element={<ProductList />} />
+            <Route path="/api-viewer" element={<ApiViewer />} />
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
