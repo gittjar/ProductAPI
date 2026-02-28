@@ -16,7 +16,7 @@ services:
         value: production
       - key: PYTHON_VERSION
         value: 3.11.0
-    healthCheckPath: /products
+    healthCheckPath: /
 
   # Frontend
   - type: web
