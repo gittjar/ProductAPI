@@ -1,5 +1,5 @@
 from pymongo import MongoClient
-from backend.config import Config
+from config import Config
 
 # Use connect=False to delay connection until first operation
 # Simple connection without custom SSL context - let pymongo handle it
